@@ -11,7 +11,7 @@
 
 .EXAMPLE
     pwsh scripts/publish-local.ps1 -All
-    pwsh scripts/publish-local.ps1 -App sleepyguy, grayscalerplus
+    pwsh scripts/publish-local.ps1 -App sleepyguy,grayscalerplus     # no spaces: pwsh -File drops the rest
     pwsh scripts/publish-local.ps1 -App mycalendarwidget -NoUpload     # build and check only
 #>
 param(
@@ -79,7 +79,7 @@ function Publish-Apk($entry, $apkPath, $version, $sha) {
     if ($LASTEXITCODE -ne 0) { throw "Upload of $($entry.name) failed." }
 }
 
-# pwsh -File passes "-App a, b" as separate "a," / "b" strings, so split and trim.
+# pwsh -File passes "-App a,b" as one string, so split and trim.
 $requested = $App | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim() } | Where-Object { $_ }
 $selected = $config.apps | Where-Object { $_.local -and ($All -or $requested -contains $_.id) }
 if (-not $selected) { throw "Nothing to build. Use -All or -App with one of: $(($config.apps | Where-Object local).id -join ', ')." }
