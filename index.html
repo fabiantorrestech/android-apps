@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Android apps</title>
+  <style>
+    :root {
+      --bg: #f6f5f2; --card: #ffffff; --text: #1d1d1b; --muted: #6b6a66; --line: #e3e1dc;
+      --accent: #2f6b4f; --accent-text: #ffffff; --warn: #9a5b13;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141413; --card: #1e1e1c; --text: #ecebe7; --muted: #9c9a94; --line: #2e2d2a;
+        --accent: #5fae86; --accent-text: #0e1a14; --warn: #e0a35c;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    main { max-width: 640px; margin: 0 auto; padding: 24px 16px 48px; }
+    h1 { font-size: 1.6rem; margin: 0 0 4px; }
+    .lede { color: var(--muted); margin: 0 0 24px; }
+    .app {
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+      padding: 16px; margin-bottom: 14px;
+    }
+    .app h2 { font-size: 1.15rem; margin: 0; }
+    .desc { margin: 4px 0 10px; color: var(--muted); }
+    .meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
+    .meta code { font-size: 0.8rem; }
+    .downloads { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 16px;
+      background: var(--accent); color: var(--accent-text); border-radius: 10px;
+      text-decoration: none; font-weight: 600;
+    }
+    .btn small { font-weight: 400; opacity: 0.85; }
+    .source { font-size: 0.85rem; color: var(--muted); }
+    .error { color: var(--warn); font-size: 0.9rem; }
+    footer { color: var(--muted); font-size: 0.85rem; margin-top: 24px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>My Android apps</h1>
+  <p class="lede">Newest signed build of each app. Installing one updates the copy already on the phone.</p>
+  <div id="apps">Loading…</div>
+  <footer>Builds are published by each app's GitHub Actions on every push to its main branch, or from the PC with <code>scripts/publish-local.ps1</code>.</footer>
+</main>
+<script>
+  const API = "https://api.github.com/repos/";
+
+  async function loadReleaseFor(app) {
+    const path = app.tag ? `releases/tags/${encodeURIComponent(app.tag)}` : "releases/latest";
+    const response = await fetch(`${API}${app.releasesRepo}/${path}`);
+    if (!response.ok) throw new Error(response.status === 404 ? "No build published yet." : `GitHub said ${response.status}.`);
+    return response.json();
+  }
+
+  function formatDate(iso) {
+    return new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+  }
+
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function renderApp(app, release, error) {
+    const card = element("section", "app");
+    card.append(element("h2", null, app.name), element("p", "desc", app.description));
+
+    if (error) {
+      card.append(element("p", "error", error.message));
+      return card;
+    }
+
+    const pattern = new RegExp(app.assetPattern);
+    const assets = release.assets.filter(asset => pattern.test(asset.name));
+    const newest = assets.reduce((latest, asset) => asset.updated_at > latest ? asset.updated_at : latest, release.published_at);
+    card.append(element("p", "meta", `${release.name} · updated ${formatDate(newest)}`));
+
+    const downloads = element("div", "downloads");
+    for (const asset of assets) {
+      const link = element("a", "btn", `Download ${asset.name.replace(/\.apk$/, "")} `);
+      link.href = asset.browser_download_url;
+      link.append(element("small", null, `${(asset.size / 1048576).toFixed(1)} MB`));
+      downloads.append(link);
+    }
+    if (assets.length === 0) downloads.append(element("p", "error", "This release has no APK yet."));
+    card.append(downloads);
+
+    const source = element("p", "source");
+    const sourceLink = element("a", null, app.sourceRepo);
+    sourceLink.href = `https://github.com/${app.sourceRepo}`;
+    source.append("Source: ", sourceLink);
+    card.append(source);
+    return card;
+  }
+
+  async function main() {
+    const container = document.getElementById("apps");
+    try {
+      const config = await (await fetch("apps.json", { cache: "no-store" })).json();
+      const cards = await Promise.all(config.apps.map(async app => {
+        try { return renderApp(app, await loadReleaseFor(app), null); }
+        catch (error) { return renderApp(app, null, error); }
+      }));
+      container.replaceChildren(...cards);
+    } catch (error) {
+      container.replaceChildren(element("p", "error", `Couldn't load the app list: ${error.message}`));
+    }
+  }
+
+  main();
+</script>
+</body>
+</html>
