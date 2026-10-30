@@ -64,19 +64,26 @@ function Get-ApkVersion($aapt2, $apk) {
     return @{ Code = $Matches[1]; Name = $Matches[2] }
 }
 
-function Publish-Apk($entry, $apkPath, $version, $sha) {
+function Publish-Apks($entry, [string[]]$apkPaths, $version, $sha) {
     $repo = $config.hubRepo
     $title = "$($entry.name) $($version.Name) ($($version.Code))"
     $notes = "Built on the PC from $($entry.sourceRepo)@$sha ($($entry.local.branch)) on $(Get-Date -Format 'yyyy-MM-dd HH:mm')."
 
     gh release view $entry.tag --repo $repo --json tagName 2>$null | Out-Null
     if ($LASTEXITCODE -eq 0) {
-        gh release upload $entry.tag $apkPath --repo $repo --clobber
+        gh release upload $entry.tag @apkPaths --repo $repo --clobber
         gh release edit $entry.tag --repo $repo --title $title --notes $notes | Out-Null
     } else {
-        gh release create $entry.tag $apkPath --repo $repo --target main --title $title --notes $notes --latest=false | Out-Null
+        gh release create $entry.tag @apkPaths --repo $repo --target main --title $title --notes $notes --latest=false | Out-Null
     }
     if ($LASTEXITCODE -ne 0) { throw "Upload of $($entry.name) failed." }
+}
+
+# An app builds one APK (local.task / output / apk) or several (local.apks: [{task, output, apk}],
+# e.g. a phone and a watch app published on the same release).
+function Get-ApkSpecs($entry) {
+    if ($entry.local.apks) { return @($entry.local.apks) }
+    return @([pscustomobject]@{ task = $entry.local.task; output = $entry.local.output; apk = $entry.local.apk })
 }
 
 # pwsh -File passes "-App a,b" as one string, so split and trim.
@@ -98,27 +105,35 @@ foreach ($entry in $selected) {
     $dir = Join-Path $reposRoot $entry.local.dir
     Assert-RepoReady $dir $entry.local.branch
 
+    $specs = Get-ApkSpecs $entry
+    $tasks = @($specs | ForEach-Object { $_.task } | Select-Object -Unique)
     Push-Location $dir
     try {
-        & .\gradlew.bat $entry.local.task --console=plain --quiet
+        & .\gradlew.bat @tasks --console=plain --quiet
         if ($LASTEXITCODE -ne 0) { throw "Gradle build failed for $($entry.name)." }
     } finally { Pop-Location }
 
-    $built = Get-ChildItem (Join-Path $dir $entry.local.output) -Filter *.apk | Sort-Object LastWriteTime | Select-Object -Last 1
-    if (-not $built) { throw "No APK in $($entry.local.output)." }
-
     $expectedKey = $config.keys.($entry.key)
-    $actualKey = Get-SignerSha256 $apksigner $built.FullName
-    if ($actualKey -ne $expectedKey) { throw "$($entry.name) is signed with $actualKey, expected the $($entry.key) key $expectedKey. Check ~/.gradle/gradle.properties." }
+    $apkPaths = @()
+    $version = $null
+    foreach ($spec in $specs) {
+        $built = Get-ChildItem (Join-Path $dir $spec.output) -Filter *.apk | Sort-Object LastWriteTime | Select-Object -Last 1
+        if (-not $built) { throw "No APK in $($spec.output)." }
 
-    $version = Get-ApkVersion $aapt2 $built.FullName
-    $apkPath = Join-Path $staging $entry.local.apk
-    Copy-Item $built.FullName $apkPath -Force
-    Write-Output "   $($version.Name) ($($version.Code)), $($entry.key) key OK -> $apkPath"
+        $actualKey = Get-SignerSha256 $apksigner $built.FullName
+        if ($actualKey -ne $expectedKey) { throw "$($spec.apk) is signed with $actualKey, expected the $($entry.key) key $expectedKey. Check ~/.gradle/gradle.properties." }
+
+        $apkVersion = Get-ApkVersion $aapt2 $built.FullName
+        if (-not $version) { $version = $apkVersion }
+        $apkPath = Join-Path $staging $spec.apk
+        Copy-Item $built.FullName $apkPath -Force
+        $apkPaths += $apkPath
+        Write-Output "   $($spec.apk): $($apkVersion.Name) ($($apkVersion.Code)), $($entry.key) key OK -> $apkPath"
+    }
 
     if (-not $NoUpload) {
         $sha = git -C $dir rev-parse --short HEAD
-        Publish-Apk $entry $apkPath $version $sha
+        Publish-Apks $entry $apkPaths $version $sha
         Write-Output "   published to $($config.hubRepo) release '$($entry.tag)'"
     }
 }

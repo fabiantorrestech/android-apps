@@ -72,6 +72,24 @@
       "assetPattern": "^GrayScalerPlus\\.apk$",
       "key": "PERSONAL",
       "local": { "dir": "Grayscaler", "branch": "master", "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "GrayScalerPlus.apk" }
+    },
+    {
+      "id": "pixelwatchnotificationguru",
+      "name": "PixelWatchNotificationGuru",
+      "description": "Another app's ringing alarm as a full-screen alarm on the Pixel Watch. The watch APK installs over Wi-Fi adb.",
+      "sourceRepo": "fabiantorrestech/PixelWatchNotificationGuru",
+      "releasesRepo": "fabiantorrestech/android-apps",
+      "tag": "pixelwatchnotificationguru",
+      "assetPattern": "^PixelWatchNotificationGuru-(phone|watch)\\.apk$",
+      "key": "PC_DEBUG",
+      "local": {
+        "dir": "PixelWatchNotificationGuru",
+        "branch": "main",
+        "apks": [
+          { "task": ":mobile:assembleDebug", "output": "mobile/build/outputs/apk/debug", "apk": "PixelWatchNotificationGuru-phone.apk" },
+          { "task": ":wear:assembleDebug", "output": "wear/build/outputs/apk/debug", "apk": "PixelWatchNotificationGuru-watch.apk" }
+        ]
+      }
     }
   ]
 }
