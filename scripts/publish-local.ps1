@@ -83,6 +83,8 @@ $selected = $config.apps | Where-Object { $_.local -and ($All -or $App -contains
 if (-not $selected) { throw "Nothing to build. Use -All or -App with one of: $(($config.apps | Where-Object local).id -join ', ')." }
 
 $env:JAVA_HOME = Find-Jdk21
+# Clones never opened in Android Studio have no local.properties, so point Gradle at the SDK.
+if (-not $env:ANDROID_HOME) { $env:ANDROID_HOME = Join-Path $env:LOCALAPPDATA 'Android/Sdk' }
 $buildTools = Find-BuildTools
 $apksigner = Join-Path $buildTools 'apksigner.bat'
 $aapt2 = Join-Path $buildTools 'aapt2.exe'
