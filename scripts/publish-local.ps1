@@ -79,7 +79,9 @@ function Publish-Apk($entry, $apkPath, $version, $sha) {
     if ($LASTEXITCODE -ne 0) { throw "Upload of $($entry.name) failed." }
 }
 
-$selected = $config.apps | Where-Object { $_.local -and ($All -or $App -contains $_.id) }
+# pwsh -File passes "-App a, b" as separate "a," / "b" strings, so split and trim.
+$requested = $App | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+$selected = $config.apps | Where-Object { $_.local -and ($All -or $requested -contains $_.id) }
 if (-not $selected) { throw "Nothing to build. Use -All or -App with one of: $(($config.apps | Where-Object local).id -join ', ')." }
 
 $env:JAVA_HOME = Find-Jdk21
