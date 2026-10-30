@@ -38,7 +38,7 @@
       "tag": "touchlightboost",
       "assetPattern": "^TouchLightBoost\\.apk$",
       "key": "TOUCHLIGHTBOOST_SIDELOAD",
-      "local": { "dir": "hisense-touch-light", "branch": "main", "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "TouchLightBoost.apk" }
+      "local": { "dir": "hisense-touch-light", "branch": "main", "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "TouchLightBoost.apk" }
     },
     {
       "id": "shortcuthub",

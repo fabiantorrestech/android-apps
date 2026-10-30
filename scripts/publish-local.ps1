@@ -48,7 +48,7 @@ function Assert-RepoReady($dir, $branch) {
     git -C $dir fetch --quiet origin $branch
     $unpushed = git -C $dir rev-list --count "origin/$branch..HEAD"
     $behind = git -C $dir rev-list --count "HEAD..origin/$branch"
-    if ($unpushed -ne '0' -or $behind -ne '0') { throw "$dir is $unpushed ahead / $behind behind origin/$branch: push or pull first." }
+    if ($unpushed -ne '0' -or $behind -ne '0') { throw "$dir is $unpushed ahead / $behind behind origin/${branch}: push or pull first." }
 }
 
 function Get-SignerSha256($apksigner, $apk) {
@@ -64,19 +64,19 @@ function Get-ApkVersion($aapt2, $apk) {
     return @{ Code = $Matches[1]; Name = $Matches[2] }
 }
 
-function Publish-Apk($app, $apkPath, $version, $sha) {
+function Publish-Apk($entry, $apkPath, $version, $sha) {
     $repo = $config.hubRepo
-    $title = "$($app.name) $($version.Name) ($($version.Code))"
-    $notes = "Built on the PC from $($app.sourceRepo)@$sha ($($app.local.branch)) on $(Get-Date -Format 'yyyy-MM-dd HH:mm')."
+    $title = "$($entry.name) $($version.Name) ($($version.Code))"
+    $notes = "Built on the PC from $($entry.sourceRepo)@$sha ($($entry.local.branch)) on $(Get-Date -Format 'yyyy-MM-dd HH:mm')."
 
-    gh release view $app.tag --repo $repo --json tagName 2>$null | Out-Null
+    gh release view $entry.tag --repo $repo --json tagName 2>$null | Out-Null
     if ($LASTEXITCODE -eq 0) {
-        gh release upload $app.tag $apkPath --repo $repo --clobber
-        gh release edit $app.tag --repo $repo --title $title --notes $notes | Out-Null
+        gh release upload $entry.tag $apkPath --repo $repo --clobber
+        gh release edit $entry.tag --repo $repo --title $title --notes $notes | Out-Null
     } else {
-        gh release create $app.tag $apkPath --repo $repo --target main --title $title --notes $notes --latest=false | Out-Null
+        gh release create $entry.tag $apkPath --repo $repo --target main --title $title --notes $notes --latest=false | Out-Null
     }
-    if ($LASTEXITCODE -ne 0) { throw "Upload of $($app.name) failed." }
+    if ($LASTEXITCODE -ne 0) { throw "Upload of $($entry.name) failed." }
 }
 
 $selected = $config.apps | Where-Object { $_.local -and ($All -or $App -contains $_.id) }
@@ -91,32 +91,32 @@ $aapt2 = Join-Path $buildTools 'aapt2.exe'
 $staging = Join-Path ([IO.Path]::GetTempPath()) 'android-apps-publish'
 New-Item -ItemType Directory -Force $staging | Out-Null
 
-foreach ($app in $selected) {
-    Write-Output "== $($app.name)"
-    $dir = Join-Path $reposRoot $app.local.dir
-    Assert-RepoReady $dir $app.local.branch
+foreach ($entry in $selected) {
+    Write-Output "== $($entry.name)"
+    $dir = Join-Path $reposRoot $entry.local.dir
+    Assert-RepoReady $dir $entry.local.branch
 
     Push-Location $dir
     try {
-        & .\gradlew.bat $app.local.task --console=plain --quiet
-        if ($LASTEXITCODE -ne 0) { throw "Gradle build failed for $($app.name)." }
+        & .\gradlew.bat $entry.local.task --console=plain --quiet
+        if ($LASTEXITCODE -ne 0) { throw "Gradle build failed for $($entry.name)." }
     } finally { Pop-Location }
 
-    $built = Get-ChildItem (Join-Path $dir $app.local.output) -Filter *.apk | Sort-Object LastWriteTime | Select-Object -Last 1
-    if (-not $built) { throw "No APK in $($app.local.output)." }
+    $built = Get-ChildItem (Join-Path $dir $entry.local.output) -Filter *.apk | Sort-Object LastWriteTime | Select-Object -Last 1
+    if (-not $built) { throw "No APK in $($entry.local.output)." }
 
-    $expectedKey = $config.keys.($app.key)
+    $expectedKey = $config.keys.($entry.key)
     $actualKey = Get-SignerSha256 $apksigner $built.FullName
-    if ($actualKey -ne $expectedKey) { throw "$($app.name) is signed with $actualKey, expected the $($app.key) key $expectedKey. Check ~/.gradle/gradle.properties." }
+    if ($actualKey -ne $expectedKey) { throw "$($entry.name) is signed with $actualKey, expected the $($entry.key) key $expectedKey. Check ~/.gradle/gradle.properties." }
 
     $version = Get-ApkVersion $aapt2 $built.FullName
-    $apkPath = Join-Path $staging $app.local.apk
+    $apkPath = Join-Path $staging $entry.local.apk
     Copy-Item $built.FullName $apkPath -Force
-    Write-Output "   $($version.Name) ($($version.Code)), $($app.key) key OK -> $apkPath"
+    Write-Output "   $($version.Name) ($($version.Code)), $($entry.key) key OK -> $apkPath"
 
     if (-not $NoUpload) {
         $sha = git -C $dir rev-parse --short HEAD
-        Publish-Apk $app $apkPath $version $sha
-        Write-Output "   published to $($config.hubRepo) release '$($app.tag)'"
+        Publish-Apk $entry $apkPath $version $sha
+        Write-Output "   published to $($config.hubRepo) release '$($entry.tag)'"
     }
 }
