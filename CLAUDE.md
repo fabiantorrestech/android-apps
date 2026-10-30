@@ -19,11 +19,11 @@ doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4
 ## Signing per app
 | App | Key | Gradle properties / CI secrets |
 | --- | --- | --- |
-| SleepyGuy, Shortcut Hub, GrayScaler+ | `fabiantorrestech-release.jks` | `PERSONAL_KEYSTORE_FILE/_PASSWORD/_ALIAS`; secrets `PERSONAL_KEYSTORE_B64/_PASSWORD/_ALIAS` |
+| SleepyGuy, Shortcut Hub, GrayScaler+ (GrayScaler+ debug builds too) | `fabiantorrestech-release.jks` | `PERSONAL_KEYSTORE_FILE/_PASSWORD/_ALIAS`; secrets `PERSONAL_KEYSTORE_B64/_PASSWORD/_ALIAS` |
 | MyCalendarWidget | `mycalendarwidget_ks` | `MYCALENDARWIDGET_KEYSTORE_*`; secrets `MYCALENDARWIDGET_KEYSTORE_B64/_PASSWORD/_ALIAS` |
 | Touch Light Boost | `app/sideload.keystore` committed in its private repo | none |
 | AccountabiliBuddy | this PC's `~/.android/debug.keystore` | none |
-| PixelWatchNotificationGuru (phone + watch, debug builds) | this PC's `~/.android/debug.keystore` (both apps must share it for the Data Layer) | none; published from the PC only |
+| PixelWatchNotificationGuru (phone + watch, debug builds) | this PC's `~/.android/debug.keystore` (both apps must share it for the Data Layer) | secret `DEBUG_KEYSTORE_B64` (CI puts it at `~/.android/debug.keystore`) |
 
 Every app repo except AccountabiliBuddy also has secret `APP_HUB_TOKEN` (fine-grained PAT, contents read/write on this repo only).
 
