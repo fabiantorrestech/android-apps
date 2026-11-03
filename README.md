@@ -14,6 +14,7 @@ Installing an APK from here updates the copy already on the phone (same signing 
 | MyCalendarWidget | [MyCalendarWidget.apk](https://github.com/fabiantorrestech/android-apps/releases/download/mycalendarwidget/MyCalendarWidget.apk) |
 | GrayScaler+ | [GrayScalerPlus.apk](https://github.com/fabiantorrestech/android-apps/releases/download/grayscalerplus/GrayScalerPlus.apk) |
 | PixelWatchNotificationGuru (phone + watch) | [phone](https://github.com/fabiantorrestech/android-apps/releases/download/pixelwatchnotificationguru/PixelWatchNotificationGuru-phone.apk) · [watch](https://github.com/fabiantorrestech/android-apps/releases/download/pixelwatchnotificationguru/PixelWatchNotificationGuru-watch.apk) (install with `adb -s <watch> install -r`) |
+| LockMyPhone Extended | [LockMyPhoneExtended.apk](https://github.com/fabiantorrestech/android-apps/releases/download/lockmyphoneextended/LockMyPhoneExtended.apk) |
 
 ## How builds get here
 
