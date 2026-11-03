@@ -24,6 +24,7 @@ doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4
 | Touch Light Boost | `app/sideload.keystore` committed in its private repo | none |
 | AccountabiliBuddy | this PC's `~/.android/debug.keystore` | none |
 | PixelWatchNotificationGuru (phone + watch, debug builds) | this PC's `~/.android/debug.keystore` (both apps must share it for the Data Layer) | secret `DEBUG_KEYSTORE_B64` (CI puts it at `~/.android/debug.keystore`) |
+| LockMyPhone-Extended (release build signed with the debug key) | this PC's `~/.android/debug.keystore` | secret `DEBUG_KEYSTORE_B64` |
 
 Every app repo except AccountabiliBuddy also has secret `APP_HUB_TOKEN` (fine-grained PAT, contents read/write on this repo only).
 

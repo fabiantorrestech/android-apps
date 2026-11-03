@@ -90,6 +90,17 @@
           { "task": ":wear:assembleDebug", "output": "wear/build/outputs/apk/debug", "apk": "PixelWatchNotificationGuru-watch.apk" }
         ]
       }
+    },
+    {
+      "id": "lockmyphoneextended",
+      "name": "LockMyPhone Extended",
+      "description": "Locks the phone for a set time and relocks on every unlock, with allowed apps, schedules, NFC, places and MacroDroid triggers.",
+      "sourceRepo": "fabiantorrestech/LockMyPhone-Extended",
+      "releasesRepo": "fabiantorrestech/android-apps",
+      "tag": "lockmyphoneextended",
+      "assetPattern": "^LockMyPhoneExtended\\.apk$",
+      "key": "PC_DEBUG",
+      "local": { "dir": "LockMyPhone-Extended", "branch": "main", "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "LockMyPhoneExtended.apk" }
     }
   ]
 }
