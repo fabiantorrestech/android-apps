@@ -6,13 +6,14 @@ Public download hub for my personal Android apps: a GitHub Pages page (`index.ht
 ```
 apps.json                  the app list: release repo + tag, APK name, expected signing key, local build info
 index.html                 Pages site; reads apps.json + the GitHub releases API in the browser
+scripts/setup-signing.ps1  put every signing key on this PC from 1Password (run once per PC)
 scripts/publish-local.ps1  build on this PC, check the signer, upload to the app's release
-doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4)
+doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4), keys in 1Password (5), shared debug key (6)
 ```
 
 ## Hard rules
-- **Never change an app's signing key.** Install-over needs the same key; a new key forces an uninstall on every phone. Expected key SHA-256s are in `apps.json` → `keys`.
-- Keystores live in `../Android_Keystores` (OneDrive). Passwords live only in `~/.gradle/gradle.properties` (PC) and repo secrets (CI). Never commit either.
+- **Never change an app's signing key.** Install-over needs the same key; a new key forces an uninstall on every phone. Expected key SHA-256s are in `apps.json` → `keys`. (The one deliberate exception was ADR 6.)
+- Keystores and their passwords live in the 1Password vault "Android Signing" (ADR 5), one item per key id (`password`, `alias`, file `keystore`). On a PC, `scripts/setup-signing.ps1` copies them to `~/.android-signing/`; CI uses repo secrets. Never commit either.
 - Release tag = app id, APK file name fixed: the download URLs must never change.
 - AccountabiliBuddy is not built or copied here; its card reads `AccountabiliBuddy-releases`.
 
@@ -22,14 +23,14 @@ doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4
 | SleepyGuy, Shortcut Hub, GrayScaler+ (GrayScaler+ debug builds too) | `fabiantorrestech-release.jks` | `PERSONAL_KEYSTORE_FILE/_PASSWORD/_ALIAS`; secrets `PERSONAL_KEYSTORE_B64/_PASSWORD/_ALIAS` |
 | MyCalendarWidget | `mycalendarwidget_ks` | `MYCALENDARWIDGET_KEYSTORE_*`; secrets `MYCALENDARWIDGET_KEYSTORE_B64/_PASSWORD/_ALIAS` |
 | Touch Light Boost | `app/sideload.keystore` committed in its private repo | none |
-| AccountabiliBuddy | this PC's `~/.android/debug.keystore` | none |
-| PixelWatchNotificationGuru (phone + watch, debug builds) | this PC's `~/.android/debug.keystore` (both apps must share it for the Data Layer) | secret `DEBUG_KEYSTORE_B64` (CI puts it at `~/.android/debug.keystore`) |
-| LockMyPhone Extended (release build signed with the debug key; hub APK is currently the exact 0.13.0 build pulled from the phone, and `local` stays null until its source is pushed) | the `PC_DEBUG` debug keystore | secret `DEBUG_KEYSTORE_B64` |
+| AccountabiliBuddy | `DEBUG_SHARED`, installed as `~/.android/debug.keystore` (ADR 6) | none |
+| PixelWatchNotificationGuru (phone + watch, debug builds) | `DEBUG_SHARED` (both apps must share it for the Data Layer) | secret `DEBUG_KEYSTORE_B64` (CI puts it at `~/.android/debug.keystore`) |
+| LockMyPhone Extended (release build signed with the debug key; must match AccountabiliBuddy for its signature-guarded sync) | `DEBUG_SHARED` | none yet (no CI workflow) |
 
 Every app repo except AccountabiliBuddy also has secret `APP_HUB_TOKEN` (fine-grained PAT, contents read/write on this repo only).
 
 ## Builds
-- JDK 21 (`~/.gradle/jdks/...21...`): Android Studio's bundled JBR is JDK 25, which Gradle 8.x (Grayscaler, hisense) can't run on.
+- JDK 21 (`~/.gradle/jdks/...21...`): Android Studio's bundled JBR is JDK 25, which Gradle 8.x (Grayscaler, hisense) can't run on. Apps on Gradle 9 can use the JBR: `publish-local.ps1 -JavaHome "C:/Program Files/Android/Android Studio/jbr"`.
 - versionCode = `git rev-list --count HEAD` (ADR 3), so CI checks out with `fetch-depth: 0`.
 
 ## Adding an app

@@ -13,12 +13,17 @@
     pwsh scripts/publish-local.ps1 -All
     pwsh scripts/publish-local.ps1 -App sleepyguy,grayscalerplus     # no spaces: pwsh -File drops the rest
     pwsh scripts/publish-local.ps1 -App mycalendarwidget -NoUpload     # build and check only
+    pwsh scripts/publish-local.ps1 -App lockmyphoneextended -JavaHome "C:/Program Files/Android/Android Studio/jbr"
+
+    Signing: if ~/.android-signing/signing.env exists (written by setup-signing.ps1, ADR 5), Gradle runs
+    through `op run`, which fills in the passwords from 1Password. Otherwise ~/.gradle/gradle.properties is used.
 #>
 param(
     [string[]]$App,
     [switch]$All,
     [switch]$NoUpload,
-    [switch]$AllowDirty
+    [switch]$AllowDirty,
+    [string]$JavaHome   # default: a JDK 21 from ~/.gradle/jdks
 )
 
 $ErrorActionPreference = 'Stop'
@@ -53,9 +58,9 @@ function Assert-RepoReady($dir, $branch) {
 
 function Get-SignerSha256($apksigner, $apk) {
     $output = & $apksigner verify --print-certs $apk 2>&1
-    $line = $output | Where-Object { $_ -match 'Signer #1 certificate SHA-256 digest: ([0-9a-f]+)' } | Select-Object -First 1
+    $line = $output | Where-Object { $_ -match 'Signer( #1|:) certificate SHA-256 digest: ([0-9a-f]+)' } | Select-Object -First 1
     if (-not $line) { throw "APK is not signed or failed verification: $apk`n$output" }
-    return $Matches[1]
+    return $Matches[2]
 }
 
 function Get-ApkVersion($aapt2, $apk) {
@@ -91,7 +96,10 @@ $requested = $App | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim(
 $selected = $config.apps | Where-Object { $_.local -and ($All -or $requested -contains $_.id) }
 if (-not $selected) { throw "Nothing to build. Use -All or -App with one of: $(($config.apps | Where-Object local).id -join ', ')." }
 
-$env:JAVA_HOME = Find-Jdk21
+$env:JAVA_HOME = if ($JavaHome) { $JavaHome } else { Find-Jdk21 }
+$signingEnv = Join-Path $env:USERPROFILE '.android-signing/signing.env'
+$useOp = Test-Path $signingEnv
+if ($useOp -and -not (Get-Command op -ErrorAction SilentlyContinue)) { throw "$signingEnv exists but the 1Password CLI (op) is not on PATH." }
 # Clones never opened in Android Studio have no local.properties, so point Gradle at the SDK.
 if (-not $env:ANDROID_HOME) { $env:ANDROID_HOME = Join-Path $env:LOCALAPPDATA 'Android/Sdk' }
 $buildTools = Find-BuildTools
@@ -109,7 +117,11 @@ foreach ($entry in $selected) {
     $tasks = @($specs | ForEach-Object { $_.task } | Select-Object -Unique)
     Push-Location $dir
     try {
-        & .\gradlew.bat @tasks --console=plain --quiet
+        if ($useOp) {
+            op run --env-file $signingEnv -- .\gradlew.bat @tasks --console=plain --quiet
+        } else {
+            & .\gradlew.bat @tasks --console=plain --quiet
+        }
         if ($LASTEXITCODE -ne 0) { throw "Gradle build failed for $($entry.name)." }
     } finally { Pop-Location }
 

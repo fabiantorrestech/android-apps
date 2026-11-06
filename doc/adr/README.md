@@ -5,6 +5,8 @@
 
 | ADR | Title | Status | Supersedes |
 | --- | --- | --- | --- |
+| [0006](0006-share-one-debug-key-across-companion-apps.md) | Share one debug key across companion apps | Accepted | — |
+| [0005](0005-keep-signing-keys-in-1password.md) | Keep signing keys in 1Password | Accepted | — |
 | [0004](0004-publish-every-app-to-one-public-hub-repo.md) | Publish every app to one public hub repo | Accepted | — |
 | [0003](0003-use-the-git-commit-count-as-the-version-code.md) | Use the git commit count as the version code | Accepted | — |
 | [0002](0002-sign-releases-with-one-personal-key-kept-outside-the-repos.md) | Sign releases with one personal key kept outside the repos | Accepted | — |
