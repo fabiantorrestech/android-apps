@@ -5,6 +5,7 @@
 
 | ADR | Title | Status | Supersedes |
 | --- | --- | --- | --- |
+| [0007](0007-publish-a-release-and-a-debug-apk-for-every-app.md) | Publish a release and a debug APK for every app | Accepted | — |
 | [0006](0006-share-one-debug-key-across-companion-apps.md) | Share one debug key across companion apps | Accepted | — |
 | [0005](0005-keep-signing-keys-in-1password.md) | Keep signing keys in 1Password | Accepted | — |
 | [0004](0004-publish-every-app-to-one-public-hub-repo.md) | Publish every app to one public hub repo | Accepted | — |

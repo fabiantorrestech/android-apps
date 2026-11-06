@@ -27,7 +27,12 @@
       background: var(--card); border: 1px solid var(--line); border-radius: 14px;
       padding: 16px; margin-bottom: 14px;
     }
-    .app h2 { font-size: 1.15rem; margin: 0; }
+    .category { margin-bottom: 28px; }
+    .category > h2 {
+      font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--muted); margin: 0 0 10px;
+    }
+    .app h3 { font-size: 1.15rem; margin: 0; }
     .desc { margin: 4px 0 10px; color: var(--muted); }
     .meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
     .meta code { font-size: 0.8rem; }
@@ -38,6 +43,10 @@
       text-decoration: none; font-weight: 600;
     }
     .btn small { font-weight: 400; opacity: 0.85; }
+    .debug { margin-top: 12px; font-size: 0.9rem; }
+    .debug summary { color: var(--muted); cursor: pointer; min-height: 32px; }
+    .debug p { color: var(--muted); margin: 6px 0 8px; font-size: 0.85rem; }
+    .btn.secondary { background: transparent; color: var(--text); border: 1px solid var(--line); font-weight: 500; }
     .source { font-size: 0.85rem; color: var(--muted); }
     .error { color: var(--warn); font-size: 0.9rem; }
     footer { color: var(--muted); font-size: 0.85rem; margin-top: 24px; }
@@ -46,7 +55,7 @@
 <body>
 <main>
   <h1>My Android apps</h1>
-  <p class="lede">Newest signed build of each app. Installing one updates the copy already on the phone.</p>
+  <p class="lede">Newest signed release build of each app. Installing one updates the copy already on the phone.</p>
   <div id="apps">Loading…</div>
   <footer>Builds are published by each app's GitHub Actions on every push to its main branch, or from the PC with <code>scripts/publish-local.ps1</code>.</footer>
 </main>
@@ -71,9 +80,27 @@
     return node;
   }
 
+  function downloadButton(asset, className) {
+    const link = element("a", className, `Download ${asset.name.replace(/\.apk$/, "")} `);
+    link.href = asset.browser_download_url;
+    link.append(element("small", null, `${(asset.size / 1048576).toFixed(1)} MB`));
+    return link;
+  }
+
+  // Collapsed list of the debug APKs: a separate ".debug" app, for debugging on a device.
+  function renderDebugBuilds(debugAssets) {
+    const details = element("details", "debug");
+    details.append(element("summary", null, `Debug builds (${debugAssets.length})`));
+    details.append(element("p", null, "Installs as a separate app (.debug) next to the normal one."));
+    const downloads = element("div", "downloads");
+    for (const asset of debugAssets) downloads.append(downloadButton(asset, "btn secondary"));
+    details.append(downloads);
+    return details;
+  }
+
   function renderApp(app, release, error) {
     const card = element("section", "app");
-    card.append(element("h2", null, app.name), element("p", "desc", app.description));
+    card.append(element("h3", null, app.name), element("p", "desc", app.description));
 
     if (error) {
       card.append(element("p", "error", error.message));
@@ -81,19 +108,18 @@
     }
 
     const pattern = new RegExp(app.assetPattern);
-    const assets = release.assets.filter(asset => pattern.test(asset.name));
+    const debugPattern = app.debugAssetPattern ? new RegExp(app.debugAssetPattern) : null;
+    const isDebug = asset => debugPattern !== null && debugPattern.test(asset.name);
+    const assets = release.assets.filter(asset => pattern.test(asset.name) && !isDebug(asset));
+    const debugAssets = release.assets.filter(isDebug);
     const newest = assets.reduce((latest, asset) => asset.updated_at > latest ? asset.updated_at : latest, release.published_at);
     card.append(element("p", "meta", `${release.name} · updated ${formatDate(newest)}`));
 
     const downloads = element("div", "downloads");
-    for (const asset of assets) {
-      const link = element("a", "btn", `Download ${asset.name.replace(/\.apk$/, "")} `);
-      link.href = asset.browser_download_url;
-      link.append(element("small", null, `${(asset.size / 1048576).toFixed(1)} MB`));
-      downloads.append(link);
-    }
+    for (const asset of assets) downloads.append(downloadButton(asset, "btn"));
     if (assets.length === 0) downloads.append(element("p", "error", "This release has no APK yet."));
     card.append(downloads);
+    if (debugAssets.length > 0) card.append(renderDebugBuilds(debugAssets));
 
     const source = element("p", "source");
     const sourceLink = element("a", null, app.sourceRepo);
@@ -103,15 +129,31 @@
     return card;
   }
 
+  // One section per category, in apps.json order; apps with an unknown category go under "Other".
+  function renderCategories(categories, apps, cards) {
+    const known = new Set(categories.map(category => category.id));
+    const groups = [...categories, { id: null, name: "Other" }];
+    const sections = [];
+    for (const group of groups) {
+      const inGroup = apps.filter(app => group.id === null ? !known.has(app.category) : app.category === group.id);
+      if (inGroup.length === 0) continue;
+      const section = element("section", "category");
+      section.append(element("h2", null, group.name));
+      for (const app of inGroup) section.append(cards.get(app));
+      sections.push(section);
+    }
+    return sections;
+  }
+
   async function main() {
     const container = document.getElementById("apps");
     try {
       const config = await (await fetch("apps.json", { cache: "no-store" })).json();
-      const cards = await Promise.all(config.apps.map(async app => {
-        try { return renderApp(app, await loadReleaseFor(app), null); }
-        catch (error) { return renderApp(app, null, error); }
-      }));
-      container.replaceChildren(...cards);
+      const cards = new Map(await Promise.all(config.apps.map(async app => {
+        try { return [app, renderApp(app, await loadReleaseFor(app), null)]; }
+        catch (error) { return [app, renderApp(app, null, error)]; }
+      })));
+      container.replaceChildren(...renderCategories(config.categories ?? [], config.apps, cards));
     } catch (error) {
       container.replaceChildren(element("p", "error", `Couldn't load the app list: ${error.message}`));
     }

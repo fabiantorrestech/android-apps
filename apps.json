@@ -1,5 +1,10 @@
 {
   "hubRepo": "fabiantorrestech/android-apps",
+  "categories": [
+    { "id": "productivity", "name": "Productivity" },
+    { "id": "tools", "name": "Tools" },
+    { "id": "eink", "name": "E-ink Device Apps" }
+  ],
   "keys": {
     "PERSONAL": "61e2c4fc5a2c2b09bfebc26b98dfe39df6965ec5e5781d43224c6249e24b2cbe",
     "MYCALENDARWIDGET": "ffd87ac8974de45f0e38913459fb805f44e881b64ed028554c45b3911a3bdb52",
@@ -11,10 +16,12 @@
       "id": "accountabilibuddy",
       "name": "AccountabiliBuddy",
       "description": "Phone and watch companion to the AccountabiliBuddy desktop focus guardian.",
+      "category": "productivity",
       "sourceRepo": "fabiantorrestech/AccountabiliBuddy",
       "releasesRepo": "fabiantorrestech/AccountabiliBuddy-releases",
       "tag": null,
       "assetPattern": "^AccountabiliBuddy-(phone|watch)-.+\\.apk$",
+      "debugAssetPattern": "^AccountabiliBuddy-(phone|watch)-.+-debug\\.apk$",
       "key": "DEBUG_SHARED",
       "local": null
     },
@@ -22,72 +29,121 @@
       "id": "sleepyguy",
       "name": "SleepyGuy",
       "description": "Distraction-free YouTube audio player for falling asleep.",
+      "category": "tools",
       "sourceRepo": "fabiantorrestech/SleepyGuy",
       "releasesRepo": "fabiantorrestech/android-apps",
       "tag": "sleepyguy",
       "assetPattern": "^SleepyGuy\\.apk$",
+      "debugAssetPattern": "^SleepyGuy-debug\\.apk$",
       "key": "PERSONAL",
-      "local": { "dir": "SleepyGuy", "branch": "main", "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "SleepyGuy.apk" }
+      "local": {
+        "dir": "SleepyGuy",
+        "branch": "main",
+        "apks": [
+          { "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "SleepyGuy.apk" },
+          { "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "SleepyGuy-debug.apk" }
+        ]
+      }
     },
     {
       "id": "touchlightboost",
       "name": "Touch Light Boost",
       "description": "One-button frontlight boost for the Hisense Touch Lite.",
+      "category": "eink",
       "sourceRepo": "fabiantorrestech/hisense-touch-light",
       "releasesRepo": "fabiantorrestech/android-apps",
       "tag": "touchlightboost",
       "assetPattern": "^TouchLightBoost\\.apk$",
+      "debugAssetPattern": "^TouchLightBoost-debug\\.apk$",
       "key": "TOUCHLIGHTBOOST_SIDELOAD",
-      "local": { "dir": "hisense-touch-light", "branch": "main", "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "TouchLightBoost.apk" }
+      "local": {
+        "dir": "hisense-touch-light",
+        "branch": "main",
+        "apks": [
+          { "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "TouchLightBoost.apk" },
+          { "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "TouchLightBoost-debug.apk" }
+        ]
+      }
     },
     {
       "id": "shortcuthub",
       "name": "Shortcut Hub",
       "description": "A hub of shortcuts and widget stacks.",
+      "category": "tools",
       "sourceRepo": "fabiantorrestech/android_shortcut_hub",
       "releasesRepo": "fabiantorrestech/android-apps",
       "tag": "shortcuthub",
       "assetPattern": "^ShortcutHub\\.apk$",
+      "debugAssetPattern": "^ShortcutHub-debug\\.apk$",
       "key": "PERSONAL",
-      "local": { "dir": "android_shortcut_hub", "branch": "main", "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "ShortcutHub.apk" }
+      "local": {
+        "dir": "android_shortcut_hub",
+        "branch": "main",
+        "apks": [
+          { "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "ShortcutHub.apk" },
+          { "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "ShortcutHub-debug.apk" }
+        ]
+      }
     },
     {
       "id": "mycalendarwidget",
       "name": "MyCalendarWidget",
       "description": "Calendar widget: day density strip, agenda and a persistent notification.",
+      "category": "tools",
       "sourceRepo": "fabiantorrestech/MyCalendarWidget",
       "releasesRepo": "fabiantorrestech/android-apps",
       "tag": "mycalendarwidget",
       "assetPattern": "^MyCalendarWidget\\.apk$",
+      "debugAssetPattern": "^MyCalendarWidget-debug\\.apk$",
       "key": "MYCALENDARWIDGET",
-      "local": { "dir": "MyCalendarWidget", "branch": "main", "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "MyCalendarWidget.apk" }
+      "local": {
+        "dir": "MyCalendarWidget",
+        "branch": "main",
+        "apks": [
+          { "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "MyCalendarWidget.apk" },
+          { "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "MyCalendarWidget-debug.apk" }
+        ]
+      }
     },
     {
       "id": "grayscalerplus",
       "name": "GrayScaler+",
       "description": "Mostly-monochrome phone with per-app, overlay and OS-event exceptions (Grayscaler fork).",
+      "category": "tools",
       "sourceRepo": "fabiantorrestech/Grayscaler",
       "releasesRepo": "fabiantorrestech/android-apps",
       "tag": "grayscalerplus",
       "assetPattern": "^GrayScalerPlus\\.apk$",
+      "debugAssetPattern": "^GrayScalerPlus-debug\\.apk$",
       "key": "PERSONAL",
-      "local": { "dir": "Grayscaler", "branch": "master", "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "GrayScalerPlus.apk" }
+      "local": {
+        "dir": "Grayscaler",
+        "branch": "master",
+        "apks": [
+          { "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "GrayScalerPlus.apk" },
+          { "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "GrayScalerPlus-debug.apk" }
+        ]
+      }
     },
     {
       "id": "pixelwatchnotificationguru",
       "name": "PixelWatchNotificationGuru",
       "description": "Another app's ringing alarm as a full-screen alarm on the Pixel Watch. The watch APK installs over Wi-Fi adb.",
+      "category": "tools",
       "sourceRepo": "fabiantorrestech/PixelWatchNotificationGuru",
       "releasesRepo": "fabiantorrestech/android-apps",
       "tag": "pixelwatchnotificationguru",
       "assetPattern": "^PixelWatchNotificationGuru-(phone|watch)\\.apk$",
+      "debugAssetPattern": "^PixelWatchNotificationGuru-(phone|watch)-debug\\.apk$",
       "key": "DEBUG_SHARED",
       "local": {
         "dir": "PixelWatchNotificationGuru",
         "branch": "main",
         "apks": [
-          { "task": ":mobile:assembleDebug", "output": "mobile/build/outputs/apk/debug", "apk": "PixelWatchNotificationGuru-phone.apk" },
-          { "task": ":wear:assembleDebug", "output": "wear/build/outputs/apk/debug", "apk": "PixelWatchNotificationGuru-watch.apk" }
+          { "task": ":mobile:assembleRelease", "output": "mobile/build/outputs/apk/release", "apk": "PixelWatchNotificationGuru-phone.apk" },
+          { "task": ":wear:assembleRelease", "output": "wear/build/outputs/apk/release", "apk": "PixelWatchNotificationGuru-watch.apk" },
+          { "task": ":mobile:assembleDebug", "output": "mobile/build/outputs/apk/debug", "apk": "PixelWatchNotificationGuru-phone-debug.apk" },
+          { "task": ":wear:assembleDebug", "output": "wear/build/outputs/apk/debug", "apk": "PixelWatchNotificationGuru-watch-debug.apk" }
         ]
       }
     },
@@ -95,17 +151,40 @@
       "id": "lockmyphoneextended",
       "name": "LockMyPhone Extended",
       "description": "Locks the phone for a set time and relocks on every unlock, with allowed apps, schedules, NFC, places and MacroDroid triggers.",
+      "category": "productivity",
       "sourceRepo": "fabiantorrestech/LockMyPhone-Extended",
       "releasesRepo": "fabiantorrestech/android-apps",
       "tag": "lockmyphoneextended",
       "assetPattern": "^LockMyPhoneExtended\\.apk$",
+      "debugAssetPattern": "^LockMyPhoneExtended-debug\\.apk$",
       "key": "DEBUG_SHARED",
       "local": {
         "dir": "LockMyPhone-Extended",
         "branch": "main",
-        "task": ":app:assembleRelease",
-        "output": "app/build/outputs/apk/release",
-        "apk": "LockMyPhoneExtended.apk"
+        "apks": [
+          { "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "LockMyPhoneExtended.apk" },
+          { "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "LockMyPhoneExtended-debug.apk" }
+        ]
+      }
+    },
+    {
+      "id": "touchwallpaper",
+      "name": "Touch Wallpaper",
+      "description": "Builds lock screen wallpapers for the Hisense Touch Lite: crop an image, then add outlines or fills behind the lock screen components. Projects stay editable.",
+      "category": "eink",
+      "sourceRepo": "fabiantorrestech/HisenseTouchWallpaperEditor",
+      "releasesRepo": "fabiantorrestech/android-apps",
+      "tag": "touchwallpaper",
+      "assetPattern": "^TouchWallpaper\\.apk$",
+      "debugAssetPattern": "^TouchWallpaper-debug\\.apk$",
+      "key": "DEBUG_SHARED",
+      "local": {
+        "dir": "hisense_touch_wallpaper_maker",
+        "branch": "main",
+        "apks": [
+          { "task": ":app:assembleRelease", "output": "app/build/outputs/apk/release", "apk": "TouchWallpaper.apk" },
+          { "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "TouchWallpaper-debug.apk" }
+        ]
       }
     }
   ]
