@@ -26,6 +26,19 @@
       "local": null
     },
     {
+      "id": "curbox",
+      "name": "Curbox (grayscale patch)",
+      "description": "Unofficial build of the Curbox screen time manager that never switches off a grayscale filter another app turned on. Built by CI from each Curbox release.",
+      "category": "productivity",
+      "sourceRepo": "fabiantorrestech/curbox-patcher",
+      "releasesRepo": "fabiantorrestech/android-apps",
+      "tag": "curbox",
+      "assetPattern": "^Curbox\\.apk$",
+      "debugAssetPattern": null,
+      "key": "PERSONAL",
+      "local": null
+    },
+    {
       "id": "sleepyguy",
       "name": "SleepyGuy",
       "description": "Distraction-free YouTube audio player for falling asleep.",

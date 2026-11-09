@@ -3,13 +3,14 @@
 One place to download the newest signed build of each of my Android apps:
 **https://fabiantorrestech.github.io/android-apps/**
 
-Installing an APK from here updates the copy already on the phone (same signing key, higher version). Each app's release also has a debug build, `<Name>-debug.apk`, which installs as a separate `.debug` app next to the normal one ([ADR 7](doc/adr/0007-publish-a-release-and-a-debug-apk-for-every-app.md)).
+Installing an APK from here updates the copy already on the phone (same signing key, higher version). Each of my own apps' releases also has a debug build, `<Name>-debug.apk`, which installs as a separate `.debug` app next to the normal one ([ADR 7](doc/adr/0007-publish-a-release-and-a-debug-apk-for-every-app.md)).
 
 ### Productivity
 
 | App | Direct link (always the newest build) |
 | --- | --- |
 | AccountabiliBuddy (phone + watch) | [AccountabiliBuddy-releases, latest](https://github.com/fabiantorrestech/AccountabiliBuddy-releases/releases/latest) |
+| Curbox (grayscale patch, unofficial) | [Curbox.apk](https://github.com/fabiantorrestech/android-apps/releases/download/curbox/Curbox.apk) (no debug build, [ADR 8](doc/adr/0008-publish-patched-builds-of-other-peoples-apps.md)) |
 | LockMyPhone Extended | [LockMyPhoneExtended.apk](https://github.com/fabiantorrestech/android-apps/releases/download/lockmyphoneextended/LockMyPhoneExtended.apk) |
 
 ### Tools
