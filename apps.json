@@ -28,7 +28,7 @@
     {
       "id": "curbox",
       "name": "Curbox (grayscale patch)",
-      "description": "Unofficial build of the Curbox screen time manager that never switches off a grayscale filter another app turned on. Built by CI from each Curbox release.",
+      "description": "Unofficial build of the Curbox screen time manager that never switches off a grayscale filter another app turned on. Built by CI from each Curbox release. Backups restore in: this build ✅ · official Curbox ✅ (same Curbox version).",
       "category": "productivity",
       "sourceRepo": "fabiantorrestech/curbox-patcher",
       "releasesRepo": "fabiantorrestech/android-apps",
