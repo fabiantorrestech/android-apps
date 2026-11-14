@@ -17,7 +17,7 @@ doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4
 - Release tag = app id, APK file name fixed: the download URLs must never change.
 - Every app publishes a release build as `<Name>.apk` and a debug build as `<Name>-debug.apk` on the same tag (ADR 7). Debug builds use `applicationIdSuffix ".debug"` and the app's release key, so they install next to the release copy. Anything declared globally (provider authorities) must use `${applicationId}`.
 - AccountabiliBuddy is not built or copied here; its card reads `AccountabiliBuddy-releases`.
-- Patched builds of other people's apps (Curbox, inkOS) follow ADR 8: release APK only (no debug build unless the owner asks), upstream's versionCode, built by their own patcher repo's CI (`local: null`).
+- Patched builds of other people's apps (Curbox, inkOS) follow ADR 8: release APK only (no debug build unless the owner asks; inkOS has one, `inkOS-debug.apk`, re-signed with PERSONAL by its CI), upstream's versionCode, built by their own patcher repo's CI (`local: null`).
 
 ## Signing per app
 | App | Key | Gradle properties / CI secrets |

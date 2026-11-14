@@ -209,7 +209,7 @@
       "releasesRepo": "fabiantorrestech/android-apps",
       "tag": "inkos",
       "assetPattern": "^inkOS\\.apk$",
-      "debugAssetPattern": null,
+      "debugAssetPattern": "^inkOS-debug\\.apk$",
       "key": "PERSONAL",
       "local": null
     }
