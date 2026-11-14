@@ -199,6 +199,19 @@
           { "task": ":app:assembleDebug", "output": "app/build/outputs/apk/debug", "apk": "TouchWallpaper-debug.apk" }
         ]
       }
+    },
+    {
+      "id": "inkos",
+      "name": "inkOS (search-first patch)",
+      "description": "Unofficial build of the inkOS e-ink launcher whose app drawer stays empty until you type and press Search (Settings > App Drawer > Show Apps). Built by CI from each inkOS release. Replaces stock inkOS: back up its data first.",
+      "category": "eink",
+      "sourceRepo": "fabiantorrestech/inkOS-Patcher",
+      "releasesRepo": "fabiantorrestech/android-apps",
+      "tag": "inkos",
+      "assetPattern": "^inkOS\\.apk$",
+      "debugAssetPattern": null,
+      "key": "PERSONAL",
+      "local": null
     }
   ]
 }

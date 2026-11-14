@@ -17,13 +17,14 @@ doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4
 - Release tag = app id, APK file name fixed: the download URLs must never change.
 - Every app publishes a release build as `<Name>.apk` and a debug build as `<Name>-debug.apk` on the same tag (ADR 7). Debug builds use `applicationIdSuffix ".debug"` and the app's release key, so they install next to the release copy. Anything declared globally (provider authorities) must use `${applicationId}`.
 - AccountabiliBuddy is not built or copied here; its card reads `AccountabiliBuddy-releases`.
-- Patched builds of other people's apps (Curbox) follow ADR 8: release APK only (no debug build unless the owner asks), upstream's versionCode, built by their own patcher repo's CI (`local: null`).
+- Patched builds of other people's apps (Curbox, inkOS) follow ADR 8: release APK only (no debug build unless the owner asks), upstream's versionCode, built by their own patcher repo's CI (`local: null`).
 
 ## Signing per app
 | App | Key | Gradle properties / CI secrets |
 | --- | --- | --- |
 | SleepyGuy, Shortcut Hub, GrayScaler+ | `fabiantorrestech-release.jks` | `PERSONAL_KEYSTORE_FILE/_PASSWORD/_ALIAS`; secrets `PERSONAL_KEYSTORE_B64/_PASSWORD/_ALIAS` |
 | Curbox (grayscale patch; built by `fabiantorrestech/curbox-patcher`) | `fabiantorrestech-release.jks` | secrets `SIGNING_KEY` (base64), `ALIAS`, `KEY_STORE_PASSWORD`, `KEY_PASSWORD`, `APP_HUB_TOKEN`; CI checks the signer against `keys.PERSONAL` |
+| inkOS (search-first patch; built by `fabiantorrestech/inkOS-Patcher`) | `fabiantorrestech-release.jks` | same secrets as Curbox; CI checks the signer against `keys.PERSONAL` |
 | MyCalendarWidget | `mycalendarwidget_ks` | `MYCALENDARWIDGET_KEYSTORE_*`; secrets `MYCALENDARWIDGET_KEYSTORE_B64/_PASSWORD/_ALIAS` |
 | Touch Light Boost | `app/sideload.keystore` committed in its private repo | none |
 | Touch Wallpaper (release build signed with the debug key, so it installs over the earlier debug builds on the Hisense) | `DEBUG_SHARED` | none (no CI workflow) |
