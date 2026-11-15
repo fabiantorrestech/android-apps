@@ -28,7 +28,7 @@
     {
       "id": "curbox",
       "name": "Curbox (grayscale patch)",
-      "description": "Unofficial build of the Curbox screen time manager that never switches off a grayscale filter another app turned on. Built by CI from each Curbox release. Backups restore in: this build ✅ · official Curbox ✅ (same Curbox version).",
+      "description": "Unofficial build of the Curbox screen time manager with three patches: it never switches off a grayscale filter another app turned on, checks links opened in Firefox right away, and can make you wait longer after each app unlock (with an optional emergency password). Built by CI from each Curbox release. Backups restore in: this build ✅ · official Curbox ✅ (same Curbox version; unlock wait settings are dropped).",
       "category": "productivity",
       "sourceRepo": "fabiantorrestech/curbox-patcher",
       "releasesRepo": "fabiantorrestech/android-apps",
