@@ -303,8 +303,8 @@
     for (const asset of assets) downloads.append(downloadButton(asset, "btn"));
     if (assets.length === 0) downloads.append(element("p", "error", "This release has no APK yet."));
     card.append(downloads);
-    if (app.packageId) card.append(renderObtainium(app, hubRepo));
     if (debugAssets.length > 0) card.append(renderDebugBuilds(debugAssets));
+    if (app.packageId) card.append(renderObtainium(app, hubRepo));
 
     const source = element("p", "source");
     source.append("Source: ", link(app.sourceRepo, `https://github.com/${app.sourceRepo}`));
