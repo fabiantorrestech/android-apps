@@ -5,6 +5,7 @@
 
 | ADR | Title | Status | Supersedes |
 | --- | --- | --- | --- |
+| [0009](0009-track-hub-releases-in-obtainium-by-release-title.md) | Track hub releases in Obtainium by release title | Accepted | — |
 | [0008](0008-publish-patched-builds-of-other-peoples-apps.md) | Publish patched builds of other people's apps | Accepted | — |
 | [0007](0007-publish-a-release-and-a-debug-apk-for-every-app.md) | Publish a release and a debug APK for every app | Accepted | — |
 | [0006](0006-share-one-debug-key-across-companion-apps.md) | Share one debug key across companion apps | Accepted | — |

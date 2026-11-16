@@ -8,6 +8,7 @@
     :root {
       --bg: #f6f5f2; --card: #ffffff; --text: #1d1d1b; --muted: #6b6a66; --line: #e3e1dc;
       --accent: #2f6b4f; --accent-text: #ffffff; --warn: #9a5b13;
+      color-scheme: light dark;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -16,13 +17,27 @@
       }
     }
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
     body {
       margin: 0; background: var(--bg); color: var(--text);
       font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
     main { max-width: 640px; margin: 0 auto; padding: 24px 16px 48px; }
     h1 { font-size: 1.6rem; margin: 0 0 4px; }
-    .lede { color: var(--muted); margin: 0 0 24px; }
+    .lede { color: var(--muted); margin: 0 0 12px; }
+    a { color: var(--accent); }
+    .tabs {
+      position: sticky; top: 0; z-index: 1; background: var(--bg);
+      display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin;
+      padding: 10px 0; margin: 0 0 16px; border-bottom: 1px solid var(--line);
+    }
+    .tab {
+      flex: none; display: inline-flex; align-items: center; min-height: 40px; padding: 8px 14px;
+      border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+      color: var(--text); text-decoration: none; font-weight: 500; white-space: nowrap;
+    }
+    .tab[aria-current="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+    .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .app {
       background: var(--card); border: 1px solid var(--line); border-radius: 14px;
       padding: 16px; margin-bottom: 14px;
@@ -43,12 +58,31 @@
       text-decoration: none; font-weight: 600;
     }
     .btn small { font-weight: 400; opacity: 0.85; }
-    .debug { margin-top: 12px; font-size: 0.9rem; }
-    .debug summary { color: var(--muted); cursor: pointer; min-height: 32px; }
-    .debug p { color: var(--muted); margin: 6px 0 8px; font-size: 0.85rem; }
+    .more { margin-top: 12px; font-size: 0.9rem; }
+    .more summary { color: var(--muted); cursor: pointer; min-height: 32px; }
+    .more p, .more li { color: var(--muted); font-size: 0.85rem; }
+    .more p { margin: 6px 0 8px; }
+    .more ol { padding-left: 20px; margin: 6px 0; }
+    .more li { margin-bottom: 8px; }
     .btn.secondary { background: transparent; color: var(--text); border: 1px solid var(--line); font-weight: 500; }
+    .obtainium { margin-top: 12px; }
+    .note { font-size: 0.85rem; color: var(--muted); margin: 6px 0 0; }
+    .copy { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
+    .copy code {
+      flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font-size: 0.8rem;
+      padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text);
+    }
+    .copy button {
+      flex: none; min-height: 36px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--card); color: var(--text); font: inherit; font-size: 0.85rem; cursor: pointer;
+    }
     .source { font-size: 0.85rem; color: var(--muted); }
     .error { color: var(--warn); font-size: 0.9rem; }
+    .guide { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+    .guide h2 { font-size: 1.15rem; margin: 0 0 8px; }
+    .guide h3 { font-size: 1rem; margin: 18px 0 6px; }
+    .guide ol { padding-left: 22px; margin: 6px 0; }
+    .guide li { margin-bottom: 8px; }
     footer { color: var(--muted); font-size: 0.85rem; margin-top: 24px; }
   </style>
 </head>
@@ -56,11 +90,44 @@
 <main>
   <h1>My Android apps</h1>
   <p class="lede">Newest signed release build of each app. Installing one updates the copy already on the phone.</p>
+  <nav id="tabs" class="tabs" aria-label="App categories" hidden></nav>
   <div id="apps">Loading…</div>
+
+  <section id="updates" class="guide" hidden>
+    <h2>Get update notifications (Obtainium / ObtainX)</h2>
+    <ol>
+      <li>Install <a href="https://github.com/ImranR98/Obtainium/releases/latest">Obtainium</a> or its fork <a href="https://f-droid.org/packages/dev.bikram.obtainx/">ObtainX</a> on the phone.</li>
+      <li>Open this page on the phone, pick a tab, and tap <b>Add to Obtainium / ObtainX</b> on an app. Confirm the import.</li>
+      <li>In Obtainium, open the app and tap <b>Install</b>.</li>
+      <li>Done: Obtainium checks for new builds in the background and notifies you. Tap the update to install it.</li>
+      <li>Button does nothing (no Obtainium yet, or a desktop browser)? Open the app's <b>Manual setup</b> and copy the values from there.</li>
+    </ol>
+
+    <h3>Already have the official app? (Curbox, inkOS, Grayscaler)</h3>
+    <p class="note">The build here uses the same app id but a different signing key, so Android won't install it over the official one, and Obtainium can hold only one entry per app id.</p>
+    <p><b>Switch to the build here and drop the official one</b></p>
+    <ol>
+      <li>Back up the app's data from its own settings.</li>
+      <li>In Obtainium, open the official app's entry and <b>Remove</b> it.</li>
+      <li>Uninstall the official app.</li>
+      <li>Add and install the build here (steps 2–3 above).</li>
+      <li>Restore the backup.</li>
+    </ol>
+    <p><b>Keep hearing about official releases too</b></p>
+    <ol>
+      <li>Curbox and inkOS here are rebuilt from every official release within about a day, so their entries already follow official versions.</li>
+      <li>For a separate heads-up, remove the official Obtainium entry (as a normal entry it would try to install the official APK over this build and fail).</li>
+      <li>Add the official repo again (link in the app's card) with <b>Track-only</b> on. It only notifies, never installs.</li>
+      <li>Or, without Obtainium: on GitHub, open the official repo → <b>Watch</b> → <b>Custom</b> → <b>Releases</b>.</li>
+    </ol>
+  </section>
+
   <footer>Builds are published by each app's GitHub Actions on every push to its main branch, or from the PC with <code>scripts/publish-local.ps1</code>.</footer>
 </main>
 <script>
   const API = "https://api.github.com/repos/";
+  const ALL_TAB = "all";
+  const UPDATES_TAB = "updates";
 
   async function loadReleaseFor(app) {
     const path = app.tag ? `releases/tags/${encodeURIComponent(app.tag)}` : "releases/latest";
@@ -80,16 +147,22 @@
     return node;
   }
 
+  function link(text, href) {
+    const anchor = element("a", null, text);
+    anchor.href = href;
+    return anchor;
+  }
+
   function downloadButton(asset, className) {
-    const link = element("a", className, `Download ${asset.name.replace(/\.apk$/, "")} `);
-    link.href = asset.browser_download_url;
-    link.append(element("small", null, `${(asset.size / 1048576).toFixed(1)} MB`));
-    return link;
+    const anchor = element("a", className, `Download ${asset.name.replace(/\.apk$/, "")} `);
+    anchor.href = asset.browser_download_url;
+    anchor.append(element("small", null, `${(asset.size / 1048576).toFixed(1)} MB`));
+    return anchor;
   }
 
   // Collapsed list of the debug APKs: a separate ".debug" app, for debugging on a device.
   function renderDebugBuilds(debugAssets) {
-    const details = element("details", "debug");
+    const details = element("details", "more");
     details.append(element("summary", null, `Debug builds (${debugAssets.length})`));
     details.append(element("p", null, "Installs as a separate app (.debug) next to the normal one."));
     const downloads = element("div", "downloads");
@@ -98,7 +171,118 @@
     return details;
   }
 
-  function renderApp(app, release, error) {
+  // ---- Obtainium / ObtainX ----
+
+  function escapeRegExp(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  // The hub repo holds every app's release, each on a fixed tag. Obtainium's default version is the tag,
+  // which never changes here, so hub apps use the release title ("SleepyGuy 0.2.35 (35)") as the version
+  // and filter on the title to pick their own release.
+  function obtainiumSettings(app, hubRepo) {
+    const settings = {
+      apkFilterRegEx: app.obtainiumApkPattern ?? app.assetPattern,
+      fallbackToOlderReleases: true,
+      verifyLatestTag: false,
+      versionDetection: false,
+    };
+    if (app.releasesRepo === hubRepo) {
+      settings.releaseTitleAsVersion = true;
+      settings.filterReleaseTitlesByRegEx = `^${escapeRegExp(app.name)}\\s`;
+    }
+    return settings;
+  }
+
+  // One-tap import: Obtainium and ObtainX both open obtainium://app/<percent-encoded app JSON>.
+  function obtainiumLink(app, settings) {
+    const config = {
+      id: app.packageId,
+      url: `https://github.com/${app.releasesRepo}`,
+      author: app.releasesRepo.split("/")[0],
+      name: app.name,
+      additionalSettings: JSON.stringify(settings),
+    };
+    return `obtainium://app/${encodeURIComponent(JSON.stringify(config))}`;
+  }
+
+  async function copyText(text, button) {
+    try {
+      await navigator.clipboard.writeText(text);
+      button.textContent = "Copied";
+    } catch {
+      const range = document.createRange();
+      range.selectNodeContents(button.previousElementSibling);
+      getSelection().removeAllRanges();
+      getSelection().addRange(range);
+      button.textContent = "Selected";
+    }
+    setTimeout(() => { button.textContent = "Copy"; }, 1500);
+  }
+
+  function copyField(value) {
+    const row = element("div", "copy");
+    const button = element("button", null, "Copy");
+    button.type = "button";
+    button.addEventListener("click", () => copyText(value, button));
+    row.append(element("code", null, value), button);
+    return row;
+  }
+
+  function step(text, value) {
+    const item = element("li");
+    item.innerHTML = text;
+    if (value !== undefined) item.append(copyField(value));
+    return item;
+  }
+
+  function renderManualSetup(app, settings) {
+    const details = element("details", "more");
+    details.append(element("summary", null, "Manual setup"));
+    const steps = element("ol");
+    steps.append(step("In Obtainium or ObtainX tap <b>Add app</b> and paste the source URL:", `https://github.com/${app.releasesRepo}`));
+    if (settings.releaseTitleAsVersion) {
+      steps.append(step("Turn on <b>Fallback to older releases</b>."));
+      steps.append(step("<b>Filter release titles by regex</b> (ObtainX: <i>by regular expression</i>):", settings.filterReleaseTitlesByRegEx));
+      steps.append(step("Turn on <b>Use release title as version string</b> (ObtainX: <i>Use as version string → Release title</i>)."));
+    }
+    steps.append(step("<b>Filter links by regex</b> (ObtainX: <i>Filter APKs by regular expression</i>):", settings.apkFilterRegEx));
+    steps.append(step("Tap <b>Add</b>. In the app's settings, turn off <b>Version detection</b> if it is on."));
+    details.append(steps);
+    return details;
+  }
+
+  function renderOfficialApp(app) {
+    const official = app.official;
+    const repoUrl = `https://github.com/${official.repo}`;
+    const details = element("details", "more");
+    details.append(element("summary", null, `Already have the official ${official.name}?`));
+    const steps = element("ol");
+    steps.append(step(`<b>Drop it:</b> back up its data → remove its Obtainium entry → uninstall it → add and install this build → restore the backup. (Different signing key, so this build can't install over it.)`));
+    const watch = official.rebuiltFromReleases
+      ? "<b>Keep watching it:</b> this build is rebuilt from each official release within about a day, so its entry already follows official versions. For a separate alert, remove the official Obtainium entry and add the official repo again with <b>Track-only</b> on:"
+      : "<b>Keep watching it:</b> remove the official Obtainium entry (it would try to install the official APK over this build) and add the official repo again with <b>Track-only</b> on:";
+    steps.append(step(watch, repoUrl));
+    steps.append(step(`Or on GitHub: <a href="${repoUrl}">${official.repo}</a> → <b>Watch</b> → <b>Custom</b> → <b>Releases</b>.`));
+    details.append(steps);
+    return details;
+  }
+
+  function renderObtainium(app, hubRepo) {
+    const block = element("div", "obtainium");
+    const settings = obtainiumSettings(app, hubRepo);
+    const addLink = element("a", "btn secondary", "Add to Obtainium / ObtainX");
+    addLink.href = obtainiumLink(app, settings);
+    block.append(addLink);
+    if (app.obtainiumNote) block.append(element("p", "note", app.obtainiumNote));
+    block.append(renderManualSetup(app, settings));
+    if (app.official) block.append(renderOfficialApp(app));
+    return block;
+  }
+
+  // ---- Cards and categories ----
+
+  function renderApp(app, release, error, hubRepo) {
     const card = element("section", "app");
     card.append(element("h3", null, app.name), element("p", "desc", app.description));
 
@@ -119,12 +303,11 @@
     for (const asset of assets) downloads.append(downloadButton(asset, "btn"));
     if (assets.length === 0) downloads.append(element("p", "error", "This release has no APK yet."));
     card.append(downloads);
+    if (app.packageId) card.append(renderObtainium(app, hubRepo));
     if (debugAssets.length > 0) card.append(renderDebugBuilds(debugAssets));
 
     const source = element("p", "source");
-    const sourceLink = element("a", null, app.sourceRepo);
-    sourceLink.href = `https://github.com/${app.sourceRepo}`;
-    source.append("Source: ", sourceLink);
+    source.append("Source: ", link(app.sourceRepo, `https://github.com/${app.sourceRepo}`));
     card.append(source);
     return card;
   }
@@ -132,12 +315,14 @@
   // One section per category, in apps.json order; apps with an unknown category go under "Other".
   function renderCategories(categories, apps, cards) {
     const known = new Set(categories.map(category => category.id));
-    const groups = [...categories, { id: null, name: "Other" }];
+    const groups = [...categories, { id: "other", name: "Other" }];
     const sections = [];
     for (const group of groups) {
-      const inGroup = apps.filter(app => group.id === null ? !known.has(app.category) : app.category === group.id);
+      const inGroup = apps.filter(app => group.id === "other" ? !known.has(app.category) : app.category === group.id);
       if (inGroup.length === 0) continue;
       const section = element("section", "category");
+      section.dataset.tab = group.id;
+      section.dataset.name = group.name;
       section.append(element("h2", null, group.name));
       for (const app of inGroup) section.append(cards.get(app));
       sections.push(section);
@@ -145,15 +330,53 @@
     return sections;
   }
 
+  // ---- Tabs: one link per category plus All and Updates; the URL hash (#tools) picks the tab ----
+
+  function renderTabs(sections) {
+    const nav = document.getElementById("tabs");
+    const tabs = [
+      { id: ALL_TAB, name: "All" },
+      ...sections.map(section => ({ id: section.dataset.tab, name: section.dataset.name })),
+      { id: UPDATES_TAB, name: "Get updates" },
+    ];
+    nav.replaceChildren(...tabs.map(tab => {
+      const anchor = link(tab.name, `#${tab.id}`);
+      anchor.className = "tab";
+      anchor.dataset.tab = tab.id;
+      return anchor;
+    }));
+    nav.hidden = false;
+  }
+
+  function showTab(sections) {
+    const requested = location.hash.slice(1);
+    const known = requested === UPDATES_TAB || sections.some(section => section.dataset.tab === requested);
+    const current = known ? requested : ALL_TAB;
+    for (const section of sections) section.hidden = current !== ALL_TAB && section.dataset.tab !== current;
+    document.getElementById("updates").hidden = current !== UPDATES_TAB;
+    for (const tab of document.querySelectorAll("#tabs .tab")) {
+      const selected = tab.dataset.tab === current;
+      if (selected) tab.setAttribute("aria-current", "true"); else tab.removeAttribute("aria-current");
+      if (selected) tab.scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+    // Keep the tab bar in view: scroll back up to it if the page was scrolled past it.
+    const nav = document.getElementById("tabs");
+    if (window.scrollY > nav.offsetTop) window.scrollTo({ top: nav.offsetTop });
+  }
+
   async function main() {
     const container = document.getElementById("apps");
     try {
       const config = await (await fetch("apps.json", { cache: "no-store" })).json();
       const cards = new Map(await Promise.all(config.apps.map(async app => {
-        try { return [app, renderApp(app, await loadReleaseFor(app), null)]; }
-        catch (error) { return [app, renderApp(app, null, error)]; }
+        try { return [app, renderApp(app, await loadReleaseFor(app), null, config.hubRepo)]; }
+        catch (error) { return [app, renderApp(app, null, error, config.hubRepo)]; }
       })));
-      container.replaceChildren(...renderCategories(config.categories ?? [], config.apps, cards));
+      const sections = renderCategories(config.categories ?? [], config.apps, cards);
+      container.replaceChildren(...sections);
+      renderTabs(sections);
+      showTab(sections);
+      window.addEventListener("hashchange", () => showTab(sections));
     } catch (error) {
       container.replaceChildren(element("p", "error", `Couldn't load the app list: ${error.message}`));
     }

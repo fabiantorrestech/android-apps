@@ -14,6 +14,7 @@
   "apps": [
     {
       "id": "accountabilibuddy",
+      "packageId": "com.accountabilibuddy.companion",
       "name": "AccountabiliBuddy",
       "description": "Phone and watch companion to the AccountabiliBuddy desktop focus guardian.",
       "category": "productivity",
@@ -22,11 +23,14 @@
       "tag": null,
       "assetPattern": "^AccountabiliBuddy-(phone|watch)-.+\\.apk$",
       "debugAssetPattern": "^AccountabiliBuddy-(phone|watch)-.+-debug\\.apk$",
+      "obtainiumApkPattern": "^AccountabiliBuddy-phone-[0-9.]+\\.apk$",
+      "obtainiumNote": "Phone app only. Desktop-only releases also show up as an update; installing one just reinstalls the same phone build.",
       "key": "DEBUG_SHARED",
       "local": null
     },
     {
       "id": "curbox",
+      "packageId": "neth.iecal.curbox",
       "name": "Curbox (grayscale patch)",
       "description": "Unofficial build of the Curbox screen time manager with three patches: it never switches off a grayscale filter another app turned on, checks links opened in Firefox right away, and can make you wait longer after each app unlock (with an optional emergency password). Built by CI from each Curbox release. Backups restore in: this build ✅ · official Curbox ✅ (same Curbox version; unlock wait settings are dropped).",
       "category": "productivity",
@@ -35,11 +39,13 @@
       "tag": "curbox",
       "assetPattern": "^Curbox\\.apk$",
       "debugAssetPattern": null,
+      "official": { "name": "Curbox", "repo": "curbox-app/curbox-android", "rebuiltFromReleases": true },
       "key": "PERSONAL",
       "local": null
     },
     {
       "id": "sleepyguy",
+      "packageId": "io.github.fabiantorrestech.sleepyguy",
       "name": "SleepyGuy",
       "description": "Distraction-free YouTube audio player for falling asleep.",
       "category": "tools",
@@ -60,6 +66,7 @@
     },
     {
       "id": "touchlightboost",
+      "packageId": "com.fabiantorres.touchlightboost",
       "name": "Touch Light Boost",
       "description": "One-button frontlight boost for the Hisense Touch Lite.",
       "category": "eink",
@@ -80,6 +87,7 @@
     },
     {
       "id": "shortcuthub",
+      "packageId": "com.fabiantorrestech.androidshortcuthub",
       "name": "Shortcut Hub",
       "description": "A hub of shortcuts and widget stacks.",
       "category": "tools",
@@ -100,6 +108,7 @@
     },
     {
       "id": "mycalendarwidget",
+      "packageId": "com.fabiantorrestech.mycalendarwidget",
       "name": "MyCalendarWidget",
       "description": "Calendar widget: day density strip, agenda and a persistent notification.",
       "category": "tools",
@@ -120,6 +129,7 @@
     },
     {
       "id": "grayscalerplus",
+      "packageId": "io.github.cloudburst.grayscaler",
       "name": "GrayScaler+",
       "description": "Mostly-monochrome phone with per-app, overlay and OS-event exceptions (Grayscaler fork).",
       "category": "tools",
@@ -128,6 +138,7 @@
       "tag": "grayscalerplus",
       "assetPattern": "^GrayScalerPlus\\.apk$",
       "debugAssetPattern": "^GrayScalerPlus-debug\\.apk$",
+      "official": { "name": "Grayscaler", "repo": "C10udburst/Grayscaler" },
       "key": "PERSONAL",
       "local": {
         "dir": "Grayscaler",
@@ -140,6 +151,7 @@
     },
     {
       "id": "pixelwatchnotificationguru",
+      "packageId": "com.fabiantorrestech.pxwatchnotificationguru",
       "name": "PixelWatchNotificationGuru",
       "description": "Another app's ringing alarm as a full-screen alarm on the Pixel Watch. The watch APK installs over Wi-Fi adb.",
       "category": "tools",
@@ -148,6 +160,8 @@
       "tag": "pixelwatchnotificationguru",
       "assetPattern": "^PixelWatchNotificationGuru-(phone|watch)\\.apk$",
       "debugAssetPattern": "^PixelWatchNotificationGuru-(phone|watch)-debug\\.apk$",
+      "obtainiumApkPattern": "^PixelWatchNotificationGuru-phone\\.apk$",
+      "obtainiumNote": "Obtainium installs the phone app; the watch APK still goes on with adb.",
       "key": "DEBUG_SHARED",
       "local": {
         "dir": "PixelWatchNotificationGuru",
@@ -162,6 +176,7 @@
     },
     {
       "id": "lockmyphoneextended",
+      "packageId": "com.fabiantorrestech.lockmyphone_extended",
       "name": "LockMyPhone Extended",
       "description": "Locks the phone for a set time and relocks on every unlock, with allowed apps, schedules, NFC, places and MacroDroid triggers.",
       "category": "productivity",
@@ -182,6 +197,7 @@
     },
     {
       "id": "touchwallpaper",
+      "packageId": "io.github.fabiantorrestech.touchwallpaper",
       "name": "Touch Wallpaper",
       "description": "Builds lock screen wallpapers for the Hisense Touch Lite: crop an image, then add outlines or fills behind the lock screen components. Projects stay editable.",
       "category": "eink",
@@ -202,6 +218,7 @@
     },
     {
       "id": "inkos",
+      "packageId": "app.inkos",
       "name": "inkOS (search-first patch)",
       "description": "Unofficial build of the inkOS e-ink launcher whose app drawer stays empty until you type and press Search (Settings > App Drawer > Show Apps). Built by CI from each inkOS release. Replaces stock inkOS: back up its data first.",
       "category": "eink",
@@ -210,6 +227,7 @@
       "tag": "inkos",
       "assetPattern": "^inkOS\\.apk$",
       "debugAssetPattern": "^inkOS-debug\\.apk$",
+      "official": { "name": "inkOS", "repo": "gezimos/inkOS", "rebuiltFromReleases": true },
       "key": "PERSONAL",
       "local": null
     }

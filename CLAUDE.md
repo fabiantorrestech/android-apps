@@ -8,13 +8,14 @@ apps.json                  categories (page section order) + the app list: categ
 index.html                 Pages site; reads apps.json + the GitHub releases API in the browser
 scripts/setup-signing.ps1  put every signing key on this PC from 1Password (run once per PC)
 scripts/publish-local.ps1  build on this PC, check the signer, upload to the app's release
-doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4), keys in 1Password (5), shared debug key (6), release + debug APKs (7)
+doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4), keys in 1Password (5), shared debug key (6), release + debug APKs (7), patched apps (8), Obtainium tracking (9)
 ```
 
 ## Hard rules
 - **Never change an app's signing key.** Install-over needs the same key; a new key forces an uninstall on every phone. Expected key SHA-256s are in `apps.json` → `keys`. (The one deliberate exception was ADR 6.)
 - Keystores and their passwords live in the 1Password vault "Android Signing" (ADR 5), one item per key id (`password`, `alias`, file `keystore`). On a PC, `scripts/setup-signing.ps1` copies them to `~/.android-signing/`; CI uses repo secrets. Never commit either.
 - Release tag = app id, APK file name fixed: the download URLs must never change.
+- Release title = `<apps.json name> <version>`, and an app's `name` never changes: users' Obtainium/ObtainX entries filter on it (ADR 9).
 - Every app publishes a release build as `<Name>.apk` and a debug build as `<Name>-debug.apk` on the same tag (ADR 7). Debug builds use `applicationIdSuffix ".debug"` and the app's release key, so they install next to the release copy. Anything declared globally (provider authorities) must use `${applicationId}`.
 - AccountabiliBuddy is not built or copied here; its card reads `AccountabiliBuddy-releases`.
 - Patched builds of other people's apps (Curbox, inkOS) follow ADR 8: release APK only (no debug build unless the owner asks; inkOS has one, `inkOS-debug.apk`, re-signed with PERSONAL by its CI), upstream's versionCode, built by their own patcher repo's CI (`local: null`).
@@ -40,5 +41,5 @@ Every app repo except AccountabiliBuddy also has secret `APP_HUB_TOKEN` (fine-gr
 
 ## Adding an app
 1. Add the signing + versionCode block and the `.debug` debug build type to its `app/build.gradle.kts` (copy from Shortcut Hub).
-2. Add it to `apps.json` with a `category` and `debugAssetPattern`, release spec first in `local.apks` (and the README table).
+2. Add it to `apps.json` with a `category`, `packageId` (its applicationId, for the Obtainium link) and `debugAssetPattern`, release spec first in `local.apks` (and the README table). Phone + watch apps also get `obtainiumApkPattern` (phone APK); builds that replace someone else's app get `official`.
 3. Set its repo secrets, then add the release + debug build and "Publish to the app hub" step to its workflow (copy from Shortcut Hub's `release-apk.yml`).

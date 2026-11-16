@@ -5,6 +5,8 @@ One place to download the newest signed build of each of my Android apps:
 
 Installing an APK from here updates the copy already on the phone (same signing key, higher version). Each of my own apps' releases also has a debug build, `<Name>-debug.apk`, which installs as a separate `.debug` app next to the normal one ([ADR 7](doc/adr/0007-publish-a-release-and-a-debug-apk-for-every-app.md)).
 
+Update notifications: open the page's **Get updates** tab, or tap **Add to Obtainium / ObtainX** on an app's card ([ADR 9](doc/adr/0009-track-hub-releases-in-obtainium-by-release-title.md)).
+
 ### Productivity
 
 | App | Direct link (always the newest build) |
