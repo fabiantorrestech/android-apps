@@ -31,7 +31,7 @@ Update notifications: open the page's **Get updates** tab, or tap **Add to Obtai
 | --- | --- |
 | Touch Light Boost | [TouchLightBoost.apk](https://github.com/fabiantorrestech/android-apps/releases/download/touchlightboost/TouchLightBoost.apk) |
 | Touch Wallpaper | [TouchWallpaper.apk](https://github.com/fabiantorrestech/android-apps/releases/download/touchwallpaper/TouchWallpaper.apk) |
-| inkOS (search-first patch, unofficial) | [inkOS.apk](https://github.com/fabiantorrestech/android-apps/releases/download/inkos/inkOS.apk) · [debug](https://github.com/fabiantorrestech/android-apps/releases/download/inkos/inkOS-debug.apk) (owner asked for a debug build, [ADR 8](doc/adr/0008-publish-patched-builds-of-other-peoples-apps.md)) |
+| inkOS (patched: search-first drawer + page dot options, unofficial) | [inkOS.apk](https://github.com/fabiantorrestech/android-apps/releases/download/inkos/inkOS.apk) · [debug](https://github.com/fabiantorrestech/android-apps/releases/download/inkos/inkOS-debug.apk) (owner asked for a debug build, [ADR 8](doc/adr/0008-publish-patched-builds-of-other-peoples-apps.md)) |
 
 ## How builds get here
 

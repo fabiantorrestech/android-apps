@@ -25,7 +25,7 @@ doc/adr/                   why: signing keys (2), versionCode (3), hub layout (4
 | --- | --- | --- |
 | SleepyGuy, Shortcut Hub, GrayScaler+ | `fabiantorrestech-release.jks` | `PERSONAL_KEYSTORE_FILE/_PASSWORD/_ALIAS`; secrets `PERSONAL_KEYSTORE_B64/_PASSWORD/_ALIAS` |
 | Curbox (grayscale patch; built by `fabiantorrestech/curbox-patcher`) | `fabiantorrestech-release.jks` | secrets `SIGNING_KEY` (base64), `ALIAS`, `KEY_STORE_PASSWORD`, `KEY_PASSWORD`, `APP_HUB_TOKEN`; CI checks the signer against `keys.PERSONAL` |
-| inkOS (search-first patch; built by `fabiantorrestech/inkOS-Patcher`) | `fabiantorrestech-release.jks` | same secrets as Curbox; CI checks the signer against `keys.PERSONAL` |
+| inkOS (patched; built by `fabiantorrestech/inkOS-Patcher`) | `fabiantorrestech-release.jks` | same secrets as Curbox; CI checks the signer against `keys.PERSONAL` |
 | MyCalendarWidget | `mycalendarwidget_ks` | `MYCALENDARWIDGET_KEYSTORE_*`; secrets `MYCALENDARWIDGET_KEYSTORE_B64/_PASSWORD/_ALIAS` |
 | Touch Light Boost | `app/sideload.keystore` committed in its private repo | none |
 | Touch Wallpaper (release build signed with the debug key, so it installs over the earlier debug builds on the Hisense) | `DEBUG_SHARED` | none (no CI workflow) |

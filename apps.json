@@ -219,8 +219,8 @@
     {
       "id": "inkos",
       "packageId": "app.inkos",
-      "name": "inkOS (search-first patch)",
-      "description": "Unofficial build of the inkOS e-ink launcher whose app drawer stays empty until you type and press Search (Settings > App Drawer > Show Apps). Built by CI from each inkOS release. Replaces stock inkOS: back up its data first.",
+      "name": "inkOS (patched)",
+      "description": "Unofficial build of the inkOS e-ink launcher with two extras: the app drawer stays empty until you type and press Search (Settings > App Drawer > Show Apps), and the home page dots can sit on either side, auto-hide with a fade, change opacity and use a pill style (Settings > Home). Built by CI from each inkOS release. Replaces stock inkOS: back up its data first.",
       "category": "eink",
       "sourceRepo": "fabiantorrestech/inkOS-Patcher",
       "releasesRepo": "fabiantorrestech/android-apps",
